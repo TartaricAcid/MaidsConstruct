@@ -1,0 +1,45 @@
+{
+  "task.maidsconstruct.smeltery": "Smeltery Work",
+  "task.maidsconstruct.smeltery.desc": "The maid will manage a Tinkers' Construct smeltery: add fuel, melt ores, and cast items while avoiding alloy contamination.",
+  "task.maidsconstruct.smeltery.has_meltable": "Has meltable items",
+
+  "chat.maidsconstruct.state.fueling.0": "Going to add fuel~",
+  "chat.maidsconstruct.state.fueling.1": "The furnace needs fuel!",
+  "chat.maidsconstruct.state.fueling.2": "Lava, lava~",
+
+  "chat.maidsconstruct.state.inserting.0": "Going to insert ores~",
+  "chat.maidsconstruct.state.inserting.1": "Leave these ores to me!",
+  "chat.maidsconstruct.state.inserting.2": "Let me smelt these~",
+
+  "chat.maidsconstruct.state.pouring.0": "Going to pour~",
+  "chat.maidsconstruct.state.pouring.1": "Starting to cast!",
+  "chat.maidsconstruct.state.pouring.2": "Fluid is ready~",
+
+  "chat.maidsconstruct.state.collecting.0": "Going to collect items~",
+  "chat.maidsconstruct.state.collecting.1": "Fresh from the mold!",
+  "chat.maidsconstruct.state.collecting.2": "Just finished~",
+
+  "chat.maidsconstruct.state.waiting_melt.0": "Waiting for melting...",
+  "chat.maidsconstruct.state.waiting_melt.1": "So hot...",
+  "chat.maidsconstruct.state.waiting_melt.2": "When will it finish...",
+
+  "chat.maidsconstruct.state.waiting_cast.0": "Waiting for casting to cool...",
+  "chat.maidsconstruct.state.waiting_cast.1": "Cool down faster~",
+  "chat.maidsconstruct.state.waiting_cast.2": "A little longer...",
+
+  "chat.maidsconstruct.collect_success.0": "Another batch done!",
+  "chat.maidsconstruct.collect_success.1": "Perfect result~",
+  "chat.maidsconstruct.collect_success.2": "Will master praise me?",
+
+  "chat.maidsconstruct.no_cast.0": "The casting tables need molds!",
+  "chat.maidsconstruct.no_cast.1": "Where are the molds?",
+  "chat.maidsconstruct.no_cast.2": "Can't cast without molds~",
+
+  "chat.maidsconstruct.inventory_full.0": "My backpack is full!",
+  "chat.maidsconstruct.inventory_full.1": "Can't carry any more...",
+  "chat.maidsconstruct.inventory_full.2": "Master, help me clear my backpack!",
+
+  "chat.maidsconstruct.no_fuel": "I need lava for fuel!",
+  "chat.maidsconstruct.no_items": "I have nothing to melt...",
+  "chat.maidsconstruct.no_casting_table": "I can't find any casting tables!"
+}
