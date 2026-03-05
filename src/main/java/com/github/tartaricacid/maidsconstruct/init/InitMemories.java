@@ -19,7 +19,4 @@ public class InitMemories {
 
     public static final RegistryObject<MemoryModuleType<BlockPos>> SMELTERY_POS =
             MEMORIES.register("smeltery_pos", () -> new MemoryModuleType<>(Optional.empty()));
-
-    public static final RegistryObject<MemoryModuleType<BlockPos>> ACTION_TARGET_POS =
-            MEMORIES.register("action_target_pos", () -> new MemoryModuleType<>(Optional.empty()));
 }

@@ -5,6 +5,7 @@ import com.github.tartaricacid.maidsconstruct.task.ai.*;
 import com.github.tartaricacid.maidsconstruct.util.SmelteryHelper;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Lists;
@@ -31,8 +32,9 @@ public class TaskSmeltery implements IMaidTask {
     public static final ResourceLocation UID = new ResourceLocation(MaidsConstruct.MOD_ID, "smeltery");
 
     private static final Supplier<ItemStack> ICON = Suppliers.memoize(() -> {
-        Item value = ForgeRegistries.ITEMS.getValue(new ResourceLocation("tconstruct:mighty_smelting"));
-        return Objects.requireNonNullElse(value, Items.AIR).getDefaultInstance();
+        ResourceLocation id = new ResourceLocation("tconstruct:mighty_smelting");
+        Item item = ForgeRegistries.ITEMS.getValue(id);
+        return Objects.requireNonNullElse(item, Items.AIR).getDefaultInstance();
     });
 
     @Override
@@ -48,7 +50,7 @@ public class TaskSmeltery implements IMaidTask {
     @Nullable
     @Override
     public SoundEvent getAmbientSound(EntityMaid maid) {
-        return null;
+        return InitSounds.MAID_IDLE.get();
     }
 
     @Override
