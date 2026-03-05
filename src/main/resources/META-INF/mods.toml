@@ -23,16 +23,16 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-#[[dependencies."${mod_id}"]]
-#modId = "tinkers-construct"
-#mandatory = true
-#versionRange = "[3.11,)"
-#ordering = "NONE"
-#side = "BOTH"
-#
-#[[dependencies."${mod_id}"]]
-#modId = "touhou-little-maid"
-#mandatory = true
-#versionRange = "[1.4,)"
-#ordering = "NONE"
-#side = "BOTH"
+[[dependencies."${mod_id}"]]
+modId = "tconstruct"
+mandatory = true
+versionRange = "[3.11,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "touhou_little_maid"
+mandatory = true
+versionRange = "[1.4,)"
+ordering = "NONE"
+side = "BOTH"
