@@ -1,5 +1,7 @@
 package com.github.tartaricacid.maidsconstruct.util;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,13 +22,14 @@ import slimeknights.tconstruct.smeltery.block.entity.tank.SmelteryTank;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CastingHelper {
-
     /**
-     * 查找冶炼炉结构周围的所有浇口。
-     * 通过扫描结构外围（包括边角）查找 FaucetBlockEntity，
-     * 并验证浇口相邻方块中存在排液孔（SearedDrainBlock，冶炼炉和熔铸炉通用）。
+     * 查找冶炼炉结构关联的所有浇注口。
+     * 通过 forEachContained 遍历结构方块，定位排液孔（SearedDrainBlock），
+     * 然后检查排液孔四周水平方向是否有浇注口（FaucetBlockEntity）。
+     * 边线的排液孔可能在多个方向连接浇注口，全部纳入结果。
      */
     public static List<BlockPos> findFaucets(ServerLevel level, HeatingStructureBlockEntity smeltery) {
         StructureData structure = smeltery.getStructure();
@@ -34,47 +37,35 @@ public class CastingHelper {
             return List.of();
         }
 
-        List<BlockPos> faucets = new ArrayList<>();
-        BlockPos min = structure.getMinPos();
-        BlockPos max = structure.getMaxPos();
+        Set<BlockPos> faucetSet = Sets.newHashSet();
 
-        // 扫描结构外围两格范围，确保覆盖所有边角位置
-        for (int y = min.getY(); y <= max.getY(); y++) {
-            for (int x = min.getX() - 2; x <= max.getX() + 2; x++) {
-                for (int z = min.getZ() - 2; z <= max.getZ() + 2; z++) {
-                    // 跳过结构内部的位置
-                    if (x >= min.getX() && x <= max.getX() && z >= min.getZ() && z <= max.getZ()) {
-                        continue;
-                    }
-                    BlockPos pos = new BlockPos(x, y, z);
-                    BlockEntity be = level.getBlockEntity(pos);
-                    if (!(be instanceof FaucetBlockEntity)) {
-                        continue;
-                    }
-                    // 验证浇口相邻方块中存在排液孔
-                    if (hasAdjacentDrain(level, pos)) {
-                        faucets.add(pos);
-                    }
+        structure.forEachContained(mutablePos -> {
+            if (!(level.getBlockState(mutablePos).getBlock() instanceof SearedDrainBlock)) {
+                return;
+            }
+
+            // 检查排液孔四周水平方向是否有浇注口
+            // 边线排液孔（位于结构边缘）可能在多个朝外方向连接浇注口
+            for (Direction dir : Direction.Plane.HORIZONTAL) {
+                BlockPos adjacent = mutablePos.relative(dir);
+
+                // 只检查结构外部的位置（排液孔朝外的方向）
+                if (structure.isInside(adjacent)) {
+                    continue;
+                }
+
+                BlockEntity be = level.getBlockEntity(adjacent);
+                if (be instanceof FaucetBlockEntity) {
+                    faucetSet.add(adjacent.immutable());
                 }
             }
-        }
-        return faucets;
+        });
+
+        return Lists.newArrayList(faucetSet);
     }
 
     /**
-     * 检查指定位置的相邻方块中是否存在排液孔（SearedDrainBlock）。
-     */
-    private static boolean hasAdjacentDrain(ServerLevel level, BlockPos pos) {
-        for (Direction dir : Direction.values()) {
-            if (level.getBlockState(pos.relative(dir)).getBlock() instanceof SearedDrainBlock) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 查找浇口下方的浇铸台/浇铸盆（位于 faucetPos.below()）。
+     * 查找浇注口下方的浇铸台/浇铸盆（位于 faucetPos.below()）。
      */
     @Nullable
     public static BlockPos findCastingBelow(ServerLevel level, BlockPos faucetPos) {
@@ -87,7 +78,7 @@ public class CastingHelper {
     }
 
     /**
-     * 查找最佳的浇口+浇铸目标配对用于浇铸（用作行走目标）。
+     * 查找最佳的浇注口+浇铸目标配对用于浇铸（用作行走目标）。
      * 如果没有合适的目标，返回 null。
      */
     @Nullable
@@ -97,13 +88,16 @@ public class CastingHelper {
     }
 
     /**
-     * 查找所有可用的浇口+浇铸目标配对，按优先级排序。
+     * 查找所有可用的浇注口+浇铸目标配对，按优先级排序。
      * 优先级：浇铸盆（流体足够铸块时）> 带铸模的浇铸台 > 浇铸盆（流体不足时）。
      */
     public static List<Pair<BlockPos, BlockPos>> findAllPouringTargets(ServerLevel level, HeatingStructureBlockEntity smeltery) {
         List<BlockPos> faucets = findFaucets(level, smeltery);
-        SmelteryTank<?> tank = smeltery.getTank();
-        int fluidAmount = tank.getContained();
+        SmelteryTank<HeatingStructureBlockEntity> tank = smeltery.getTank();
+
+        // 使用单种流体的最大量进行评分，而非总量
+        // 因为冶炼炉只能输出底部的一种流体
+        int fluidAmount = SmelteryHelper.getMaxFluidAmount(tank);
         if (fluidAmount <= 0) {
             return List.of();
         }
@@ -126,7 +120,7 @@ public class CastingHelper {
                 continue;
             }
 
-            // 如果浇口正在浇铸，跳过
+            // 如果浇注口正在浇铸，跳过
             BlockEntity faucetBe = level.getBlockEntity(faucetPos);
             if (faucetBe instanceof FaucetBlockEntity faucet && faucet.isPouring()) {
                 continue;
@@ -221,30 +215,7 @@ public class CastingHelper {
     }
 
     /**
-     * 检查冶炼炉附近是否有任何浇铸台含有铸模。
-     */
-    public static boolean hasCastingWithMold(ServerLevel level, HeatingStructureBlockEntity smeltery) {
-        List<BlockPos> faucets = findFaucets(level, smeltery);
-        for (BlockPos faucetPos : faucets) {
-            BlockPos castingPos = findCastingBelow(level, faucetPos);
-            if (castingPos == null) {
-                continue;
-            }
-            BlockEntity be = level.getBlockEntity(castingPos);
-            if (be instanceof CastingBlockEntity.Basin) {
-                return true; // 浇铸盆不需要铸模
-            }
-            if (be instanceof CastingBlockEntity casting) {
-                if (!casting.getItem(CastingBlockEntity.INPUT).isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 检查冶炼炉附近是否有任何浇口正在浇铸。
+     * 检查冶炼炉附近是否有任何浇注口正在浇铸。
      */
     public static boolean isAnyFaucetPouring(ServerLevel level, HeatingStructureBlockEntity smeltery) {
         List<BlockPos> faucets = findFaucets(level, smeltery);
@@ -280,7 +251,9 @@ public class CastingHelper {
         List<BlockPos> faucets = findFaucets(level, smeltery);
         for (BlockPos faucetPos : faucets) {
             BlockPos castingPos = findCastingBelow(level, faucetPos);
-            if (castingPos == null) continue;
+            if (castingPos == null) {
+                continue;
+            }
 
             BlockEntity be = level.getBlockEntity(castingPos);
             if (be instanceof CastingBlockEntity casting) {

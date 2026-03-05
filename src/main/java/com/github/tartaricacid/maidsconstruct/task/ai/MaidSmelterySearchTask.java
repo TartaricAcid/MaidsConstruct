@@ -115,7 +115,9 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
                 case IDLE -> handleIdle(level, maid, smeltery, smelteryPos);
                 case WAITING_MELT -> handleWaitingMelt(maid, smeltery);
                 case WAITING_CAST -> handleWaitingCast(level, maid, smeltery);
-                default -> false;
+                // 其他状态下可能存在 TARGET_POS 丢失问题
+                // 重置回 IDLE 以重新决策
+                default -> resetToIdle(maid, 5);
             };
         }
 
@@ -148,24 +150,19 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
             }
 
             // 未找到合适的浇铸目标，但冶炼炉还有空位且女仆有矿石 → 继续投入
-            if (SmelteryHelper.hasEmptySlots(smeltery) && SmelteryHelper.hasMeltableItems(maid)) {
+            if (SmelteryHelper.hasEmptySlots(smeltery) && SmelteryHelper.hasMeltableItems(maid, smeltery)) {
                 return setActionTarget(maid, smelteryPos, SmelteryWorkState.INSERTING);
             }
 
             // 未找到合适的浇铸目标，也没有可投入的矿石
-            if (!CastingHelper.hasCastingWithMold(level, smeltery)) {
-                SmelteryBubbles.addBubbleIfNotTooMany(maid, SmelteryBubbles.randomBubble(maid, SmelteryBubbles.NO_CAST_BUBBLES));
-                this.setNextCheckTickCount(200);
-                return false;
-            }
-
-            // 有铸模但全部繁忙 - 等待
             // FIXME：万一每个浇筑台都因为流体不足卡住，似乎会卡死在此状态？
-            this.setNextCheckTickCount(MAX_DELAY);
+            SmelteryBubbles.addBubbleIfNotTooMany(maid, SmelteryBubbles.randomBubble(maid, SmelteryBubbles.NO_CAST_BUBBLES));
+            this.setNextCheckTickCount(200);
             return false;
         }
 
         // 优先级 4：如果物品仍在熔炼中，等待
+        // FIXME：如果玩家放了个无法烧制的物品，女仆似乎会卡死在此状态？
         if (!SmelteryHelper.allItemsMelted(smeltery)) {
             maid.getBrain().setMemory(InitMemories.SMELTERY_STATE.get(), SmelteryWorkState.WAITING_MELT);
             SmelteryBubbles.showStateBubble(maid, SmelteryWorkState.WAITING_MELT);
@@ -177,30 +174,25 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
         if (SmelteryHelper.needsFuel(smeltery)) {
             // 尝试添加燃料
             // FIXME：实际上除了岩浆，烈焰血等也是冶炼高级合金的燃料，是否应该也考虑？
-            if (SmelteryHelper.hasLavaItems(maid)) {
-                BlockPos tankPos = SmelteryHelper.findFillableTank(level, smeltery);
-                if (tankPos != null) {
-                    return setActionTarget(maid, tankPos, SmelteryWorkState.FUELING);
-                }
+            if (SmelteryHelper.hasFuelItems(maid)) {
+                return setActionTarget(maid, smelteryPos, SmelteryWorkState.FUELING);
             }
 
             // 女仆没有岩浆，且冶炼炉中也没有燃料 -> 不投入物品，等待玩家补充燃料
-            if (!SmelteryHelper.hasFuelReserve(level, smeltery)) {
-                SmelteryBubbles.showNoFuelBubble(maid);
-                this.setNextCheckTickCount(200);
-                return false;
-            }
+            SmelteryBubbles.showNoFuelBubble(maid);
+            this.setNextCheckTickCount(200);
+            return false;
         }
 
         // 优先级 6：检查女仆是否有可熔炼物品（合金规避：仅在冶炼炉为空时插入）
-        if (SmelteryHelper.isTankEmpty(smeltery) && SmelteryHelper.hasMeltableItems(maid)) {
+        if (SmelteryHelper.isTankEmpty(smeltery) && SmelteryHelper.hasMeltableItems(maid, smeltery)) {
             if (SmelteryHelper.hasEmptySlots(smeltery)) {
                 return setActionTarget(maid, smelteryPos, SmelteryWorkState.INSERTING);
             }
         }
 
         // 无事可做
-        if (!SmelteryHelper.hasMeltableItems(maid) && SmelteryHelper.isTankEmpty(smeltery)) {
+        if (!SmelteryHelper.hasMeltableItems(maid, smeltery) && SmelteryHelper.isTankEmpty(smeltery)) {
             // 没有物品也没有流体 - 女仆无事可做
             SmelteryBubbles.showNoItemsBubble(maid);
             this.setNextCheckTickCount(200);

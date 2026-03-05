@@ -1,6 +1,7 @@
 package com.github.tartaricacid.maidsconstruct.util;
 
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
+import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 
 public class SmelteryBubbles {
@@ -52,7 +53,6 @@ public class SmelteryBubbles {
 
     public static final String NO_FUEL_BUBBLE = "chat.maidsconstruct.no_fuel";
     public static final String NO_ITEMS_BUBBLE = "chat.maidsconstruct.no_items";
-    public static final String NO_CASTING_TABLE_BUBBLE = "chat.maidsconstruct.no_casting_table";
 
     private static final int MAX_CHAT_BUBBLES = 2;
 
@@ -61,8 +61,9 @@ public class SmelteryBubbles {
     }
 
     public static void addBubbleIfNotTooMany(EntityMaid maid, String langKey) {
-        if (maid.getChatBubbleManager().getChatBubbleDataCollection().size() < MAX_CHAT_BUBBLES) {
-            maid.getChatBubbleManager().addTextChatBubble(langKey);
+        ChatBubbleManager manager = maid.getChatBubbleManager();
+        if (manager.getChatBubbleDataCollection().size() < MAX_CHAT_BUBBLES) {
+            manager.addTextChatBubble(langKey);
         }
     }
 
@@ -87,9 +88,5 @@ public class SmelteryBubbles {
 
     public static void showNoItemsBubble(EntityMaid maid) {
         addBubbleIfNotTooMany(maid, NO_ITEMS_BUBBLE);
-    }
-
-    public static void showNoCastingTableBubble(EntityMaid maid) {
-        addBubbleIfNotTooMany(maid, NO_CASTING_TABLE_BUBBLE);
     }
 }

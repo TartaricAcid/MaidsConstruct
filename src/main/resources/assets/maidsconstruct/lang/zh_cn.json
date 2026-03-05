@@ -1,45 +1,34 @@
 {
-  "task.maidsconstruct.smeltery": "冶炼炉工作",
-  "task.maidsconstruct.smeltery.desc": "女仆将管理匠魂冶炼炉：添加燃料、熔炼矿石、浇铸物品，并自动规避合金污染。",
-  "task.maidsconstruct.smeltery.has_meltable": "拥有可熔炼物品",
-
+  "task.maidsconstruct.smeltery": "冶炼炉",
+  "task.maidsconstruct.smeltery.desc.1": "女仆能够管理匠魂的冶炼炉或熔铸炉",
+  "task.maidsconstruct.smeltery.desc.2": "添加燃料、熔炼矿石、浇铸物品，并自动规避生成合金",
   "chat.maidsconstruct.state.fueling.0": "去添加燃料~",
   "chat.maidsconstruct.state.fueling.1": "炉子快没燃料了！",
   "chat.maidsconstruct.state.fueling.2": "岩浆，岩浆~",
-
   "chat.maidsconstruct.state.inserting.0": "去投入矿石~",
   "chat.maidsconstruct.state.inserting.1": "这批矿石交给我吧！",
   "chat.maidsconstruct.state.inserting.2": "让我来烧~",
-
   "chat.maidsconstruct.state.pouring.0": "去浇铸啦~",
   "chat.maidsconstruct.state.pouring.1": "开始浇铸！",
   "chat.maidsconstruct.state.pouring.2": "流体准备好了~",
-
   "chat.maidsconstruct.state.collecting.0": "去收取成品~",
   "chat.maidsconstruct.state.collecting.1": "出炉啦！",
   "chat.maidsconstruct.state.collecting.2": "新鲜出炉~",
-
   "chat.maidsconstruct.state.waiting_melt.0": "等待熔炼中……",
   "chat.maidsconstruct.state.waiting_melt.1": "好热啊……",
   "chat.maidsconstruct.state.waiting_melt.2": "什么时候化完呢……",
-
   "chat.maidsconstruct.state.waiting_cast.0": "等待浇铸冷却中……",
   "chat.maidsconstruct.state.waiting_cast.1": "快点冷却吧~",
   "chat.maidsconstruct.state.waiting_cast.2": "还要等一会儿……",
-
   "chat.maidsconstruct.collect_success.0": "又完成了一批！",
   "chat.maidsconstruct.collect_success.1": "完美的成品~",
   "chat.maidsconstruct.collect_success.2": "主人会夸我吧？",
-
   "chat.maidsconstruct.no_cast.0": "浇铸台上需要模具！",
   "chat.maidsconstruct.no_cast.1": "模具呢模具呢？",
   "chat.maidsconstruct.no_cast.2": "没有模具怎么浇铸嘛~",
-
   "chat.maidsconstruct.inventory_full.0": "我的背包满了！",
   "chat.maidsconstruct.inventory_full.1": "装不下了啦……",
   "chat.maidsconstruct.inventory_full.2": "主人快来帮我清背包！",
-
   "chat.maidsconstruct.no_fuel": "我需要岩浆桶作为燃料！",
-  "chat.maidsconstruct.no_items": "我没有可以熔炼的东西……",
-  "chat.maidsconstruct.no_casting_table": "找不到浇铸台！"
+  "chat.maidsconstruct.no_items": "我没有可以熔炼的东西……"
 }

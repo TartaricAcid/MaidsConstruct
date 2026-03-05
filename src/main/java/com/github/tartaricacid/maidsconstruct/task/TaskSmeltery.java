@@ -2,7 +2,6 @@ package com.github.tartaricacid.maidsconstruct.task;
 
 import com.github.tartaricacid.maidsconstruct.MaidsConstruct;
 import com.github.tartaricacid.maidsconstruct.task.ai.*;
-import com.github.tartaricacid.maidsconstruct.util.SmelteryHelper;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
@@ -21,10 +20,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -65,7 +62,10 @@ public class TaskSmeltery implements IMaidTask {
     }
 
     @Override
-    public List<Pair<String, Predicate<EntityMaid>>> getConditionDescription(EntityMaid maid) {
-        return Collections.singletonList(Pair.of("has_meltable", SmelteryHelper::hasMeltableItems));
+    public List<String> getDescription(EntityMaid maid) {
+        return List.of(
+                "task.maidsconstruct.smeltery.desc.1",
+                "task.maidsconstruct.smeltery.desc.2"
+        );
     }
 }
