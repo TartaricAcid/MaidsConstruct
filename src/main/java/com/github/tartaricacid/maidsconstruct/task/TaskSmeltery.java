@@ -55,7 +55,7 @@ public class TaskSmeltery implements IMaidTask {
         return Lists.newArrayList(
                 Pair.of(5, new MaidSmelterySearchTask(0.6f, 4)),
                 Pair.of(6, new MaidSmelteryFuelTask()),
-                Pair.of(6, new MaidSmelteryInsertTask()),
+                Pair.of(6, new MaidSmelteryInteractTask()),
                 Pair.of(6, new MaidSmelteryPourTask()),
                 Pair.of(6, new MaidSmelteryCollectTask())
         );

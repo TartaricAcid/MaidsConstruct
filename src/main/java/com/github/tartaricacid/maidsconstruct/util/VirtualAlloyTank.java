@@ -30,7 +30,7 @@ public class VirtualAlloyTank implements IAlloyTank {
 
     @Override
     public int getTemperature() {
-        return smeltery.getFuelModule().getTemperature();
+        return SmelteryHelper.getFuelTemperature(smeltery);
     }
 
     @Override

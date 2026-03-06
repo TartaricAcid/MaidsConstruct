@@ -10,10 +10,10 @@ public class SmelteryBubbles {
             "chat.maidsconstruct.state.fueling.1",
             "chat.maidsconstruct.state.fueling.2"
     };
-    public static final String[] INSERTING_BUBBLES = {
-            "chat.maidsconstruct.state.inserting.0",
-            "chat.maidsconstruct.state.inserting.1",
-            "chat.maidsconstruct.state.inserting.2"
+    public static final String[] INTERACTING_BUBBLES = {
+            "chat.maidsconstruct.state.interacting.0",
+            "chat.maidsconstruct.state.interacting.1",
+            "chat.maidsconstruct.state.interacting.2"
     };
     public static final String[] POURING_BUBBLES = {
             "chat.maidsconstruct.state.pouring.0",
@@ -70,7 +70,7 @@ public class SmelteryBubbles {
     public static void showStateBubble(EntityMaid maid, SmelteryWorkState state) {
         String[] pool = switch (state) {
             case FUELING -> FUELING_BUBBLES;
-            case INSERTING -> INSERTING_BUBBLES;
+            case INTERACTING -> INTERACTING_BUBBLES;
             case POURING -> POURING_BUBBLES;
             case COLLECTING -> COLLECTING_BUBBLES;
             case WAITING_MELT -> WAITING_MELT_BUBBLES;

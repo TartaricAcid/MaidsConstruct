@@ -10,9 +10,9 @@ public enum SmelteryWorkState {
      */
     FUELING,
     /**
-     * 往冶炼炉里添加要冶炼的物品
+     * 往冶炼炉里添加要冶炼的物品，并取出无法熔化的物品
      */
-    INSERTING,
+    INTERACTING,
     /**
      * 等待物品冶炼完成
      */

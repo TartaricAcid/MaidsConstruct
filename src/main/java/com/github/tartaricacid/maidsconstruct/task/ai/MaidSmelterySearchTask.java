@@ -151,7 +151,7 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
 
             // 未找到合适的浇铸目标，但冶炼炉还有空位且女仆有矿石 → 继续投入
             if (SmelteryHelper.hasEmptySlots(smeltery) && SmelteryHelper.hasMeltableItems(maid, smeltery)) {
-                return setActionTarget(maid, smelteryPos, SmelteryWorkState.INSERTING);
+                return setActionTarget(maid, smelteryPos, SmelteryWorkState.INTERACTING);
             }
 
             // 未找到合适的浇铸目标，也没有可投入的矿石
@@ -162,15 +162,19 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
         }
 
         // 优先级 4：如果物品仍在熔炼中，等待
-        // FIXME：如果玩家放了个无法烧制的物品，女仆似乎会卡死在此状态？
-        if (!SmelteryHelper.allItemsMelted(smeltery)) {
+        if (!SmelteryHelper.allMeltableItemsMelted(smeltery)) {
             maid.getBrain().setMemory(InitMemories.SMELTERY_STATE.get(), SmelteryWorkState.WAITING_MELT);
             SmelteryBubbles.showStateBubble(maid, SmelteryWorkState.WAITING_MELT);
             this.setNextCheckTickCount(MAX_DELAY);
             return false;
         }
 
-        // 优先级 5：冶炼炉为空 -> 添加燃料（如果有的话，否则停止工作）
+        // 优先级 5：如果冶炼炉中有不可熔化的物品，前往冶炼炉提取
+        if (SmelteryHelper.hasNonMeltableItems(smeltery)) {
+            return setActionTarget(maid, smelteryPos, SmelteryWorkState.INTERACTING);
+        }
+
+        // 优先级 6：冶炼炉为空 -> 添加燃料（如果有的话，否则停止工作）
         if (SmelteryHelper.needsFuel(smeltery)) {
             // 尝试添加燃料
             // FIXME：实际上除了岩浆，烈焰血等也是冶炼高级合金的燃料，是否应该也考虑？
@@ -184,10 +188,10 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
             return false;
         }
 
-        // 优先级 6：检查女仆是否有可熔炼物品（合金规避：仅在冶炼炉为空时插入）
+        // 优先级 7：检查女仆是否有可熔炼物品（合金规避：仅在冶炼炉为空时插入）
         if (SmelteryHelper.isTankEmpty(smeltery) && SmelteryHelper.hasMeltableItems(maid, smeltery)) {
             if (SmelteryHelper.hasEmptySlots(smeltery)) {
-                return setActionTarget(maid, smelteryPos, SmelteryWorkState.INSERTING);
+                return setActionTarget(maid, smelteryPos, SmelteryWorkState.INTERACTING);
             }
         }
 
@@ -204,7 +208,7 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
     }
 
     private boolean handleWaitingMelt(EntityMaid maid, HeatingStructureBlockEntity smeltery) {
-        if (SmelteryHelper.allItemsMelted(smeltery)) {
+        if (SmelteryHelper.allMeltableItemsMelted(smeltery)) {
             return resetToIdle(maid, 5);
         }
         // 仍在熔炼中，稍后再检查

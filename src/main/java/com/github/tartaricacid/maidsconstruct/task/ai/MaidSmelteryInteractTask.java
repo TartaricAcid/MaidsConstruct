@@ -4,6 +4,7 @@ import com.github.tartaricacid.maidsconstruct.init.InitMemories;
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
 import com.github.tartaricacid.maidsconstruct.util.SmelteryHelper;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -12,10 +13,10 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import slimeknights.tconstruct.smeltery.block.entity.controller.HeatingStructureBlockEntity;
 
-public class MaidSmelteryInsertTask extends MaidSmelteryActionTask {
+public class MaidSmelteryInteractTask extends MaidSmelteryActionTask {
     @Override
     protected SmelteryWorkState getRequiredState() {
-        return SmelteryWorkState.INSERTING;
+        return SmelteryWorkState.INTERACTING;
     }
 
     @Override
@@ -29,13 +30,16 @@ public class MaidSmelteryInsertTask extends MaidSmelteryActionTask {
             BlockEntity be = level.getBlockEntity(smelteryPos);
             if (be instanceof HeatingStructureBlockEntity smeltery) {
                 smeltery.getCapability(ForgeCapabilities.ITEM_HANDLER)
-                        .ifPresent(smelteryInv -> insertItems(maid, smeltery, smelteryInv, level));
+                        .ifPresent(smelteryInv -> interactItems(maid, smeltery, smelteryInv, level));
             }
         });
     }
 
-    private void insertItems(EntityMaid maid, HeatingStructureBlockEntity smeltery, IItemHandler smelteryInv, ServerLevel level) {
+    private void interactItems(EntityMaid maid, HeatingStructureBlockEntity smeltery, IItemHandler smelteryInv, ServerLevel level) {
         IItemHandler maidInv = maid.getAvailableInv(true);
+
+        // 先从冶炼炉中提取不可熔化的物品到女仆背包
+        this.extractNonMeltableItems(smeltery, smelteryInv, maid);
 
         boolean inserted = false;
         // 追踪下一个可熔炼槽位
@@ -84,6 +88,28 @@ public class MaidSmelteryInsertTask extends MaidSmelteryActionTask {
 
         if (inserted) {
             maid.swing(InteractionHand.MAIN_HAND);
+        }
+    }
+
+    /**
+     * 从冶炼炉中提取不可熔化的物品（无配方或温度不够）到女仆背包。
+     */
+    private void extractNonMeltableItems(HeatingStructureBlockEntity smeltery, IItemHandler smelteryInv, EntityMaid maid) {
+        for (int i = 0; i < smelteryInv.getSlots(); i++) {
+            ItemStack stack = smelteryInv.getStackInSlot(i);
+            if (stack.isEmpty()) {
+                continue;
+            }
+            // 检查该物品是否不可熔化
+            int temperature = SmelteryHelper.getFuelTemperature(smeltery);
+            if (SmelteryHelper.canBeMelted(stack, temperature)) {
+                continue;
+            }
+            // 尝试提取并放入女仆背包
+            ItemStack extracted = smelteryInv.extractItem(i, 1, false);
+            if (!extracted.isEmpty()) {
+                ItemsUtil.giveItemToMaid(maid, extracted);
+            }
         }
     }
 }

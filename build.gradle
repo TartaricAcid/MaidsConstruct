@@ -121,6 +121,14 @@ dependencies {
     // NBT 编辑工具等
     runtimeOnly fg.deobf("maven.modrinth:nbtedit-reborn:5.0.3+mc1.20.1")
     runtimeOnly fg.deobf("maven.modrinth:kiwi:11.5.5")
+
+    // 其他测试辅助 mod
+    runtimeOnly fg.deobf("maven.modrinth:patchouli:1.20.1-84.1-forge")
+    runtimeOnly fg.deobf("maven.modrinth:immersiveengineering:10.2.0-183-forge")
+    runtimeOnly fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
+    runtimeOnly fg.deobf("maven.modrinth:cofh-core:11.0.2-forge")
+    runtimeOnly fg.deobf("maven.modrinth:thermal-foundation:11.0.6-forge")
+    runtimeOnly fg.deobf("maven.modrinth:mekanism:10.4.16.80-forge")
 }
 
 tasks.named('processResources', ProcessResources).configure {
