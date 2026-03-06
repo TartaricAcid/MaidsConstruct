@@ -129,8 +129,14 @@ public class CastingHelper {
                 continue;
             }
 
-            // 如果浇铸台已有流体（正在浇铸/冷却中），跳过
+            // 如果浇铸台已有流体
             if (isCastingBusy(casting)) {
+                // 检查是否为"卡住"状态：有流体但冷却未开始（流体量不足）
+                // 如果冶炼炉有匹配的流体，可以尝试补充来恢复冷却
+                if (casting.getCoolingTime() < 0 && canRefillStuckCasting(casting, maxFluid)) {
+                    // 补充卡住的浇铸台，给予最高优先级（4）
+                    scored.add(Pair.of(Pair.of(faucetPos, castingPos), 4));
+                }
                 continue;
             }
 
@@ -200,6 +206,18 @@ public class CastingHelper {
                                             RecipeType<ICastingRecipe> recipeType) {
         VirtualCastingContainer container = new VirtualCastingContainer(cast, fluidStack);
         return level.getRecipeManager().getRecipeFor(recipeType, container, level).isPresent();
+    }
+
+    /**
+     * 检查"卡住"的浇铸台是否可以通过补充流体来恢复。
+     * 条件：冶炼炉中最大的流体与浇铸台中已有的流体类型相同。
+     */
+    private static boolean canRefillStuckCasting(CastingBlockEntity casting, FluidStack smelteryFluid) {
+        return casting.getCapability(ForgeCapabilities.FLUID_HANDLER)
+                .map(handler -> {
+                    FluidStack castingFluid = handler.getFluidInTank(0);
+                    return !castingFluid.isEmpty() && castingFluid.isFluidEqual(smelteryFluid);
+                }).orElse(false);
     }
 
     /**
@@ -276,7 +294,8 @@ public class CastingHelper {
     }
 
     /**
-     * 检查冶炼炉附近是否有任何浇铸台正在冷却（含有流体但尚无输出物品）。
+     * 检查冶炼炉附近是否有任何浇铸台正在有效冷却（含有流体、尚无输出物品且冷却正在进行）。
+     * 如果浇铸台含有流体但 coolingTime 为 -1，说明流体量不足以触发配方，不视为正在冷却。
      */
     public static boolean isAnyCastingCooling(ServerLevel level, HeatingStructureBlockEntity smeltery) {
         List<BlockPos> faucets = findFaucets(level, smeltery);
@@ -288,7 +307,9 @@ public class CastingHelper {
 
             BlockEntity be = level.getBlockEntity(castingPos);
             if (be instanceof CastingBlockEntity casting) {
-                if (isCastingBusy(casting) && casting.getItem(CastingBlockEntity.OUTPUT).isEmpty()) {
+                // 有流体、无产出、且冷却正在进行（coolingTime >= 0 表示配方已匹配并开始冷却）
+                if (isCastingBusy(casting) && casting.getItem(CastingBlockEntity.OUTPUT).isEmpty()
+                    && casting.getCoolingTime() >= 0) {
                     return true;
                 }
             }

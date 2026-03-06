@@ -128,7 +128,6 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
 
     private boolean handleIdle(ServerLevel level, EntityMaid maid, HeatingStructureBlockEntity smeltery, BlockPos smelteryPos) {
         // 优先级 1：从浇铸台收集已完成的物品
-        // FIXME：需要检查是否存在合法的浇筑台（盆），没有的话也要弹出提示气泡
         Pair<BlockPos, BlockPos> collectable = CastingHelper.findCollectableOutput(level, smeltery);
         if (collectable != null) {
             return setActionTarget(maid, collectable.getSecond(), SmelteryWorkState.COLLECTING);
@@ -155,7 +154,7 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
             }
 
             // 未找到合适的浇铸目标，也没有可投入的矿石
-            // FIXME：万一每个浇筑台都因为流体不足卡住，似乎会卡死在此状态？
+            // 女仆发出聊天气泡提示玩家
             SmelteryBubbles.addBubbleIfNotTooMany(maid, SmelteryBubbles.randomBubble(maid, SmelteryBubbles.NO_CAST_BUBBLES));
             this.setNextCheckTickCount(200);
             return false;
@@ -176,8 +175,7 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
 
         // 优先级 6：冶炼炉为空 -> 添加燃料（如果有的话，否则停止工作）
         if (SmelteryHelper.needsFuel(smeltery)) {
-            // 尝试添加燃料
-            // FIXME：实际上除了岩浆，烈焰血等也是冶炼高级合金的燃料，是否应该也考虑？
+            // 尝试添加燃料（仅添加配置白名单中的流体燃料）
             if (SmelteryHelper.hasFuelItems(maid)) {
                 return setActionTarget(maid, smelteryPos, SmelteryWorkState.FUELING);
             }

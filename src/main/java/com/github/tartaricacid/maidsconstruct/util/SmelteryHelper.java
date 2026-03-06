@@ -1,11 +1,11 @@
 package com.github.tartaricacid.maidsconstruct.util;
 
+import com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.Tags.Items;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
@@ -238,9 +238,8 @@ public class SmelteryHelper {
     }
 
     /**
-     * 检查物品是否含有燃料（通过 FLUID_HANDLER_ITEM 能力）。
-     * <p>
-     * FIXME：目前仅检测岩浆，但是实际上燃料还可能是烈焰血
+     * 检查物品是否含有配置中允许的冶炼炉燃料（通过 FLUID_HANDLER_ITEM 能力）。
+     * 使用 mod 配置中的燃料白名单进行判断，默认支持岩浆和烈焰血。
      */
     public static boolean containsFuel(ItemStack stack) {
         if (stack.isEmpty()) {
@@ -249,7 +248,7 @@ public class SmelteryHelper {
         return stack.getCapability(FLUID_HANDLER_ITEM).map(handler -> {
             for (int i = 0; i < handler.getTanks(); i++) {
                 FluidStack fluid = handler.getFluidInTank(i);
-                if (!fluid.isEmpty() && fluid.getFluid().isSame(Fluids.LAVA)) {
+                if (!fluid.isEmpty() && MaidsConstructConfig.isAllowedFuel(fluid.getFluid())) {
                     return true;
                 }
             }

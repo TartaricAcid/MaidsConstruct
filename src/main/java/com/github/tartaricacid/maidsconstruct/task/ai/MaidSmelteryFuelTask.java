@@ -1,5 +1,6 @@
 package com.github.tartaricacid.maidsconstruct.task.ai;
 
+import com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig;
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
 import com.github.tartaricacid.maidsconstruct.util.SmelteryHelper;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -10,7 +11,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -45,7 +45,8 @@ public class MaidSmelteryFuelTask extends MaidSmelteryActionTask {
     }
 
     /**
-     * 从女仆背包中查找含有岩浆的容器物品，通过 Forge 流体能力将岩浆转移到燃料罐。
+     * 从女仆背包中查找含有燃料流体的容器物品，通过 Forge 流体能力将燃料转移到燃料罐。
+     * 仅使用配置中允许的燃料流体（默认为岩浆和烈焰血）。
      * 兼容所有实现了 FLUID_HANDLER_ITEM 能力的模组容器。
      */
     private void fillFuelFromInventory(EntityMaid maid, MultitankFuelModule fuelModule) {
@@ -73,11 +74,8 @@ public class MaidSmelteryFuelTask extends MaidSmelteryActionTask {
                 continue;
             }
 
-            // 从物品容器中抽取岩浆
-            FluidStack drained = itemHandler.drain(
-                    new FluidStack(Fluids.LAVA, Integer.MAX_VALUE),
-                    FluidAction.SIMULATE
-            );
+            // 从物品容器中抽取燃料流体
+            FluidStack drained = this.drainFuel(itemHandler);
 
             // 如果抽取失败（理论上不应该发生），正常返还
             if (drained.isEmpty()) {
@@ -103,7 +101,7 @@ public class MaidSmelteryFuelTask extends MaidSmelteryActionTask {
 
             // 实际执行：从物品抽取 -> 填入燃料罐
             FluidStack actualDrained = itemHandler.drain(
-                    new FluidStack(Fluids.LAVA, accepted),
+                    new FluidStack(drained, accepted),
                     FluidAction.EXECUTE
             );
 
@@ -119,5 +117,19 @@ public class MaidSmelteryFuelTask extends MaidSmelteryActionTask {
             maid.swing(InteractionHand.MAIN_HAND);
             return;
         }
+    }
+
+    /**
+     * 从物品流体容器中模拟抽取燃料流体。
+     * 按配置中允许的流体进行查找。
+     */
+    private FluidStack drainFuel(IFluidHandlerItem handler) {
+        for (int i = 0; i < handler.getTanks(); i++) {
+            FluidStack fluid = handler.getFluidInTank(i);
+            if (!fluid.isEmpty() && MaidsConstructConfig.isAllowedFuel(fluid.getFluid())) {
+                return handler.drain(new FluidStack(fluid, Integer.MAX_VALUE), FluidAction.SIMULATE);
+            }
+        }
+        return FluidStack.EMPTY;
     }
 }
