@@ -45,6 +45,7 @@ public class MaidCompactCraftTask extends MaidCheckRateTask {
      */
     private static final TagKey<Item> NUGGETS_TAG = Tags.Items.NUGGETS;
     private static final TagKey<Item> INGOTS_TAG = Tags.Items.INGOTS;
+    private static final TagKey<Item> GEMS_TAG = Tags.Items.GEMS;
     private static final TagKey<Item> STORAGE_BLOCKS_TAG = Tags.Items.STORAGE_BLOCKS;
 
     /**
@@ -111,18 +112,18 @@ public class MaidCompactCraftTask extends MaidCheckRateTask {
             }
         }
 
-        // 尝试合成锭 → 块
+        // 尝试合成锭/宝石 → 块
         if (config.craftBlocks()) {
-            Map<Item, IntList> ingotSlots = Maps.newHashMap();
+            Map<Item, IntList> compactSlots = Maps.newHashMap();
 
             for (int i = 0; i < inv.getSlots(); i++) {
                 ItemStack stack = inv.getStackInSlot(i);
-                if (!stack.isEmpty() && stack.is(INGOTS_TAG)) {
-                    ingotSlots.computeIfAbsent(stack.getItem(), k -> new IntArrayList()).add(i);
+                if (!stack.isEmpty() && (stack.is(INGOTS_TAG) || stack.is(GEMS_TAG))) {
+                    compactSlots.computeIfAbsent(stack.getItem(), k -> new IntArrayList()).add(i);
                 }
             }
 
-            for (var entry : ingotSlots.entrySet()) {
+            for (var entry : compactSlots.entrySet()) {
                 int total = countItems(inv, entry.getValue());
                 if (total >= 9) {
                     tryCompact(level, inv, entry.getKey(), entry.getValue(), total);
@@ -137,7 +138,7 @@ public class MaidCompactCraftTask extends MaidCheckRateTask {
     }
 
     /**
-     * 按照 块 → 锭 → 粒 → 其他 的顺序整理背包。
+     * 按照 块 → 锭 → 宝石 → 粒 → 其他 的顺序整理背包。
      * 先将所有物品取出，排序后重新放入。
      */
     private void sortInventory(IItemHandler inv) {
@@ -193,10 +194,13 @@ public class MaidCompactCraftTask extends MaidCheckRateTask {
         if (stack.is(INGOTS_TAG)) {
             return 1;
         }
-        if (stack.is(NUGGETS_TAG)) {
+        if (stack.is(GEMS_TAG)) {
             return 2;
         }
-        return 3;
+        if (stack.is(NUGGETS_TAG)) {
+            return 3;
+        }
+        return 4;
     }
 
     private int countItems(IItemHandler inv, List<Integer> slots) {

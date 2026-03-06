@@ -189,17 +189,17 @@ public class SmelteryHelper {
     }
 
     /**
-     * 获取冶炼炉流体罐中单种流体的最大量。
-     * 冶炼炉只能输出底部流体，所以评分时应以最大单种流体量为准。
+     * 获取冶炼炉流体罐中量最多的流体。
+     * 该流体会被移到底部作为浇注口的输出流体。
      */
-    public static int getMaxFluidAmount(SmelteryTank<?> tank) {
-        int max = 0;
+    public static FluidStack getMaxFluidStack(SmelteryTank<?> tank) {
+        FluidStack maxFluid = FluidStack.EMPTY;
         for (FluidStack fluid : tank.getFluids()) {
-            if (fluid.getAmount() > max) {
-                max = fluid.getAmount();
+            if (fluid.getAmount() > maxFluid.getAmount()) {
+                maxFluid = fluid;
             }
         }
-        return max;
+        return maxFluid;
     }
 
     /**

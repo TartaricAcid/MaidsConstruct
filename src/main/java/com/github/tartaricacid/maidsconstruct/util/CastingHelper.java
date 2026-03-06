@@ -8,9 +8,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
 import slimeknights.tconstruct.library.recipe.FluidValues;
+import slimeknights.tconstruct.library.recipe.TinkerRecipeTypes;
+import slimeknights.tconstruct.library.recipe.casting.ICastingRecipe;
 import slimeknights.tconstruct.smeltery.TinkerSmeltery;
 import slimeknights.tconstruct.smeltery.block.component.SearedDrainBlock;
 import slimeknights.tconstruct.smeltery.block.entity.CastingBlockEntity;
@@ -95,10 +99,9 @@ public class CastingHelper {
         List<BlockPos> faucets = findFaucets(level, smeltery);
         SmelteryTank<HeatingStructureBlockEntity> tank = smeltery.getTank();
 
-        // 使用单种流体的最大量进行评分，而非总量
-        // 因为冶炼炉只能输出底部的一种流体
-        int fluidAmount = SmelteryHelper.getMaxFluidAmount(tank);
-        if (fluidAmount <= 0) {
+        // 获取量最多的流体（将被移到底部作为浇注口输出）
+        FluidStack maxFluid = SmelteryHelper.getMaxFluidStack(tank);
+        if (maxFluid.isEmpty()) {
             return List.of();
         }
 
@@ -131,7 +134,7 @@ public class CastingHelper {
                 continue;
             }
 
-            int score = scoreCastingTarget(casting, fluidAmount);
+            int score = scoreCastingTarget(level, casting, maxFluid);
             if (score > 0) {
                 scored.add(Pair.of(Pair.of(faucetPos, castingPos), score));
             }
@@ -146,14 +149,19 @@ public class CastingHelper {
      * 为浇铸目标评分以进行优先级选择。
      * 分数越高 = 目标越优。
      * 如果目标无法接受流体，返回 -1。
-     * 优先级：浇铸盆（流体足够铸块时=810mB）> 锭铸模（90mB）> 粒铸模（10mB）
-     * 浇铸台只允许锭铸模和粒铸模，其他铸模返回 -1。
+     * 优先级：浇铸盆（流体足够铸块时=810mB）> 锭铸模（90mB）= 宝石铸模（100mB）> 粒铸模（10mB）
+     * 浇铸台只允许锭铸模、宝石铸模和粒铸模，其他铸模返回 -1。
      * 流体不足以完成一次浇铸的目标也返回 -1。
+     * 额外检查流体是否能与铸模/浇铸盆产出有效配方，避免无效浇铸。
      */
-    private static int scoreCastingTarget(CastingBlockEntity casting, int availableFluid) {
+    private static int scoreCastingTarget(ServerLevel level, CastingBlockEntity casting, FluidStack fluid) {
+        int availableFluid = fluid.getAmount();
+
         if (casting instanceof CastingBlockEntity.Basin) {
+            RecipeType<ICastingRecipe> type = TinkerRecipeTypes.CASTING_BASIN.get();
             // 浇铸盆制造块（金属需要810mB）。只在流体充足时优先选择浇铸盆。
-            if (availableFluid >= FluidValues.METAL_BLOCK) {
+            if (availableFluid >= FluidValues.METAL_BLOCK
+                && hasCastingRecipe(level, ItemStack.EMPTY, fluid, type)) {
                 return 3;
             }
             return -1;
@@ -165,13 +173,20 @@ public class CastingHelper {
             return -1;
         }
 
-        // 只允许锭铸模和粒铸模，检查流体是否充足
+        // 只允许锭铸模、宝石铸模和粒铸模，检查流体量是否充足且配方是否存在
         Item castItem = inputCast.getItem();
+        RecipeType<ICastingRecipe> type = TinkerRecipeTypes.CASTING_TABLE.get();
         if (isIngotCast(castItem)) {
-            return availableFluid >= FluidValues.INGOT ? 2 : -1;
+            return availableFluid >= FluidValues.INGOT
+                   && hasCastingRecipe(level, inputCast, fluid, type) ? 2 : -1;
+        }
+        if (isGemCast(castItem)) {
+            return availableFluid >= FluidValues.GEM
+                   && hasCastingRecipe(level, inputCast, fluid, type) ? 2 : -1;
         }
         if (isNuggetCast(castItem)) {
-            return availableFluid >= FluidValues.NUGGET ? 1 : -1;
+            return availableFluid >= FluidValues.NUGGET
+                   && hasCastingRecipe(level, inputCast, fluid, type) ? 1 : -1;
         }
 
         // 不支持的铸模类型
@@ -179,10 +194,26 @@ public class CastingHelper {
     }
 
     /**
+     * 检查给定铸模和流体的组合是否存在有效的浇铸配方。
+     */
+    private static boolean hasCastingRecipe(ServerLevel level, ItemStack cast, FluidStack fluidStack,
+                                            RecipeType<ICastingRecipe> recipeType) {
+        VirtualCastingContainer container = new VirtualCastingContainer(cast, fluidStack);
+        return level.getRecipeManager().getRecipeFor(recipeType, container, level).isPresent();
+    }
+
+    /**
      * 检查物品是否为锭铸模（金质/沙质/红沙质）。
      */
     private static boolean isIngotCast(Item item) {
         return TinkerSmeltery.ingotCast.values().contains(item);
+    }
+
+    /**
+     * 检查物品是否为宝石铸模（金质/沙质/红沙质）。
+     */
+    private static boolean isGemCast(Item item) {
+        return TinkerSmeltery.gemCast.values().contains(item);
     }
 
     /**

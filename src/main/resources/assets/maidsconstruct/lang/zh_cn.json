@@ -36,9 +36,9 @@
   "gui.maidsconstruct.config.craft_blocks": "自动合成块",
   "gui.maidsconstruct.config.craft_ingots.tooltip.true": "已开启：自动将 9 个粒合成为锭",
   "gui.maidsconstruct.config.craft_ingots.tooltip.false": "已关闭：不自动合成锭",
-  "gui.maidsconstruct.config.craft_blocks.tooltip.true": "已开启：自动将 9 个锭合成为块",
+  "gui.maidsconstruct.config.craft_blocks.tooltip.true": "已开启：自动将 9 个锭或宝石合成为块",
   "gui.maidsconstruct.config.craft_blocks.tooltip.false": "已关闭：不自动合成块",
   "gui.maidsconstruct.config.sort_inventory": "自动整理背包",
-  "gui.maidsconstruct.config.sort_inventory.tooltip.true": "已开启：合成后按 块 → 锭 → 粒 → 其他 整理背包",
+  "gui.maidsconstruct.config.sort_inventory.tooltip.true": "已开启：合成后按 块 → 锭 → 宝石 → 粒 → 其他 整理背包",
   "gui.maidsconstruct.config.sort_inventory.tooltip.false": "已关闭：不自动整理背包"
 }
