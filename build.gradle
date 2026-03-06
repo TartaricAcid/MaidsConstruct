@@ -129,6 +129,7 @@ dependencies {
     runtimeOnly fg.deobf("maven.modrinth:cofh-core:11.0.2-forge")
     runtimeOnly fg.deobf("maven.modrinth:thermal-foundation:11.0.6-forge")
     runtimeOnly fg.deobf("maven.modrinth:mekanism:10.4.16.80-forge")
+    runtimeOnly fg.deobf("maven.modrinth:torcherino:20.0.0-forge,1.20.1")
 }
 
 tasks.named('processResources', ProcessResources).configure {

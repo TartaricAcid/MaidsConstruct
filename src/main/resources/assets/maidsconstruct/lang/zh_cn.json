@@ -30,5 +30,15 @@
   "chat.maidsconstruct.inventory_full.1": "装不下了啦……",
   "chat.maidsconstruct.inventory_full.2": "主人快来帮我清背包！",
   "chat.maidsconstruct.no_fuel": "我需要岩浆桶作为燃料！",
-  "chat.maidsconstruct.no_items": "我没有可以熔炼的东西……"
+  "chat.maidsconstruct.no_items": "我没有可以熔炼的东西……",
+  "gui.maidsconstruct.config.title": "冶炼炉工作配置",
+  "gui.maidsconstruct.config.craft_ingots": "自动合成锭",
+  "gui.maidsconstruct.config.craft_blocks": "自动合成块",
+  "gui.maidsconstruct.config.craft_ingots.tooltip.true": "已开启：自动将 9 个粒合成为锭",
+  "gui.maidsconstruct.config.craft_ingots.tooltip.false": "已关闭：不自动合成锭",
+  "gui.maidsconstruct.config.craft_blocks.tooltip.true": "已开启：自动将 9 个锭合成为块",
+  "gui.maidsconstruct.config.craft_blocks.tooltip.false": "已关闭：不自动合成块",
+  "gui.maidsconstruct.config.sort_inventory": "自动整理背包",
+  "gui.maidsconstruct.config.sort_inventory.tooltip.true": "已开启：合成后按 块 → 锭 → 粒 → 其他 整理背包",
+  "gui.maidsconstruct.config.sort_inventory.tooltip.false": "已关闭：不自动整理背包"
 }

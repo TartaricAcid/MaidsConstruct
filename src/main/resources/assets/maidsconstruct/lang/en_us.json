@@ -30,5 +30,15 @@
   "chat.maidsconstruct.inventory_full.1": "Can't carry any more...",
   "chat.maidsconstruct.inventory_full.2": "Master, help me clear my backpack!",
   "chat.maidsconstruct.no_fuel": "I need lava for fuel!",
-  "chat.maidsconstruct.no_items": "I have nothing to melt..."
+  "chat.maidsconstruct.no_items": "I have nothing to melt...",
+  "gui.maidsconstruct.config.title": "Smeltery Work Config",
+  "gui.maidsconstruct.config.craft_ingots": "Auto-craft Ingots",
+  "gui.maidsconstruct.config.craft_blocks": "Auto-craft Blocks",
+  "gui.maidsconstruct.config.craft_ingots.tooltip.true": "Enabled: Auto-compact 9 nuggets into ingots",
+  "gui.maidsconstruct.config.craft_ingots.tooltip.false": "Disabled: Won't auto-craft ingots",
+  "gui.maidsconstruct.config.craft_blocks.tooltip.true": "Enabled: Auto-compact 9 ingots into blocks",
+  "gui.maidsconstruct.config.craft_blocks.tooltip.false": "Disabled: Won't auto-craft blocks",
+  "gui.maidsconstruct.config.sort_inventory": "Auto-sort Inventory",
+  "gui.maidsconstruct.config.sort_inventory.tooltip.true": "Enabled: Sort inventory by Blocks > Ingots > Nuggets > Other",
+  "gui.maidsconstruct.config.sort_inventory.tooltip.false": "Disabled: Won't auto-sort inventory"
 }

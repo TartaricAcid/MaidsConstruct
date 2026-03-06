@@ -43,7 +43,7 @@ The maid operates as a state machine with states defined in `SmelteryWorkState`:
 
 ```
 IDLE -> FUELING -> IDLE
-IDLE -> INSERTING -> WAITING_MELT -> IDLE
+IDLE -> INTERACTING -> WAITING_MELT -> IDLE
 IDLE -> POURING -> WAITING_CAST -> COLLECTING -> IDLE
 ```
 
@@ -56,7 +56,7 @@ state and within interaction range, then calls `performAction()` and transitions
 
 - `MaidSmelteryFuelTask` - inserts lava buckets into the smeltery fuel slot
 - `MaidSmelteryInteractTask` - interacts with the smeltery controller to insert ores (with ore validation and alloy
-  avoidance)
+  avoidance) and extracts non-meltable items from the smeltery inventory
 - `MaidSmelteryPourTask` - activates faucets and ensures largest fluid is at bottom
 - `MaidSmelteryCollectTask` - picks up finished items from casting tables/basins
 
