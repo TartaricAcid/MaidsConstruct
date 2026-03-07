@@ -1,4 +1,4 @@
-package com.github.tartaricacid.maidsconstruct.util;
+package com.github.tartaricacid.maidsconstruct.util.recipe;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

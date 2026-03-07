@@ -1,5 +1,6 @@
-package com.github.tartaricacid.maidsconstruct.util;
+package com.github.tartaricacid.maidsconstruct.util.recipe;
 
+import com.github.tartaricacid.maidsconstruct.util.smeltery.SmelteryHelper;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import slimeknights.tconstruct.library.recipe.alloying.IAlloyTank;

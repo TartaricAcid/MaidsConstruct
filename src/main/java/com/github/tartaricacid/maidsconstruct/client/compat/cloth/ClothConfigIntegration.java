@@ -7,8 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import static com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig.ALLOWED_FUELS;
-import static com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig.MAID_SMELTERY_IMMUNITY;
+import static com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig.*;
 
 public class ClothConfigIntegration {
     @SubscribeEvent
@@ -23,6 +22,15 @@ public class ClothConfigIntegration {
                 .setDefaultValue(MAID_SMELTERY_IMMUNITY.getDefault())
                 .setTooltip(immunityTooltip)
                 .setSaveConsumer(MAID_SMELTERY_IMMUNITY::set)
+                .build());
+
+        MutableComponent ignoreTagName = Component.translatable("config.maidsconstruct.maid_ignore_smeltery_allowlist_tag");
+        MutableComponent ignoreTagTooltip = Component.translatable("config.maidsconstruct.maid_ignore_smeltery_allowlist_tag.tooltip");
+        category.addEntry(event.getEntryBuilder()
+                .startBooleanToggle(ignoreTagName, MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.get())
+                .setDefaultValue(MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.getDefault())
+                .setTooltip(ignoreTagTooltip)
+                .setSaveConsumer(MAID_IGNORE_SMELTERY_ALLOWLIST_TAG::set)
                 .build());
 
         MutableComponent fuelsName = Component.translatable("config.maidsconstruct.allowed_fuels");

@@ -1,0 +1,13 @@
+{
+  "values": [
+    "tconstruct:grout",
+    "tconstruct:nether_grout",
+    "#forge:ores",
+    "#forge:raw_materials",
+    "#forge:dusts",
+    {
+      "id": "#forge:raw_nuggets",
+      "required": false
+    }
+  ]
+}

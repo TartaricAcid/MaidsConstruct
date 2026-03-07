@@ -1,5 +1,6 @@
-package com.github.tartaricacid.maidsconstruct.util;
+package com.github.tartaricacid.maidsconstruct.util.smeltery;
 
+import com.github.tartaricacid.maidsconstruct.util.recipe.VirtualCastingContainer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
@@ -162,7 +163,7 @@ public class CastingHelper {
      * 流体不足以完成一次浇铸的目标也返回 -1。
      * 额外检查流体是否能与铸模/浇铸盆产出有效配方，避免无效浇铸。
      */
-    private static int scoreCastingTarget(ServerLevel level, CastingBlockEntity casting, FluidStack fluid) {
+    public static int scoreCastingTarget(ServerLevel level, CastingBlockEntity casting, FluidStack fluid) {
         int availableFluid = fluid.getAmount();
 
         // 如果是铸造盆
@@ -223,8 +224,8 @@ public class CastingHelper {
     /**
      * 检查给定铸模和流体的组合是否存在有效的浇铸配方。
      */
-    private static boolean hasCastingRecipe(ServerLevel level, ItemStack cast, FluidStack fluidStack,
-                                            RecipeType<ICastingRecipe> recipeType) {
+    public static boolean hasCastingRecipe(ServerLevel level, ItemStack cast, FluidStack fluidStack,
+                                           RecipeType<ICastingRecipe> recipeType) {
         VirtualCastingContainer container = new VirtualCastingContainer(cast, fluidStack);
         return level.getRecipeManager().getRecipeFor(recipeType, container, level).isPresent();
     }
@@ -233,7 +234,7 @@ public class CastingHelper {
      * 检查"卡住"的浇铸台是否可以通过补充流体来恢复。
      * 条件：冶炼炉中最大的流体与浇铸台中已有的流体类型相同。
      */
-    private static boolean canRefillStuckCasting(CastingBlockEntity casting, FluidStack smelteryFluid) {
+    public static boolean canRefillStuckCasting(CastingBlockEntity casting, FluidStack smelteryFluid) {
         return casting.getCapability(ForgeCapabilities.FLUID_HANDLER)
                 .map(handler -> {
                     FluidStack castingFluid = handler.getFluidInTank(0);
@@ -244,21 +245,21 @@ public class CastingHelper {
     /**
      * 检查物品是否为锭铸模（金质/沙质/红沙质）。
      */
-    private static boolean isIngotCast(Item item) {
+    public static boolean isIngotCast(Item item) {
         return TinkerSmeltery.ingotCast.values().contains(item);
     }
 
     /**
      * 检查物品是否为宝石铸模（金质/沙质/红沙质）。
      */
-    private static boolean isGemCast(Item item) {
+    public static boolean isGemCast(Item item) {
         return TinkerSmeltery.gemCast.values().contains(item);
     }
 
     /**
      * 检查物品是否为粒铸模（金质/沙质/红沙质）。
      */
-    private static boolean isNuggetCast(Item item) {
+    public static boolean isNuggetCast(Item item) {
         return TinkerSmeltery.nuggetCast.values().contains(item);
     }
 

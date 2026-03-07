@@ -1,7 +1,7 @@
 package com.github.tartaricacid.maidsconstruct.task.ai;
 
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
-import com.github.tartaricacid.maidsconstruct.util.SmelteryBubbles;
+import com.github.tartaricacid.maidsconstruct.util.smeltery.SmelteryBubbles;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;

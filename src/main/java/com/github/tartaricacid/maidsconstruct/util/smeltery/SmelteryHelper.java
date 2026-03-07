@@ -1,12 +1,13 @@
-package com.github.tartaricacid.maidsconstruct.util;
+package com.github.tartaricacid.maidsconstruct.util.smeltery;
 
 import com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig;
+import com.github.tartaricacid.maidsconstruct.datagen.tag.TagItem;
+import com.github.tartaricacid.maidsconstruct.util.recipe.VirtualAlloyTank;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.Tags.Items;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import slimeknights.tconstruct.library.recipe.TinkerRecipeTypes;
@@ -101,7 +102,7 @@ public class SmelteryHelper {
 
     /**
      * 检查女仆背包中是否有允许投入冶炼炉的物品。
-     * 仅限 forge:ores 和 forge:raw_materials 标签的物品，防止将成品（锭/块等）放回冶炼炉。
+     * 仅限 SMELTERY_ALLOWLIST 里的物品，防止将成品（锭/块等）放回冶炼炉。
      */
     public static boolean hasMeltableItems(EntityMaid maid, HeatingStructureBlockEntity smeltery) {
         IItemHandler inv = maid.getAvailableInv(false);
@@ -115,14 +116,15 @@ public class SmelteryHelper {
 
     /**
      * 检查物品是否为允许投入冶炼炉的原料。
-     * 仅限 forge:ores 和 forge:raw_materials 标签的物品，且熔炼后产生的流体不会与冶炼炉中已有流体形成合金。
+     * 仅限 SMELTERY_ALLOWLIST 里的物品，且熔炼后产生的流体不会与冶炼炉中已有流体形成合金。
      */
     public static boolean isSmeltingInput(ItemStack stack, HeatingStructureBlockEntity smeltery) {
         if (stack.isEmpty()) {
             return false;
         }
-        // 属于 forge:ores 或 forge:raw_materials 标签
-        if (!stack.is(Items.ORES) && !stack.is(Items.RAW_MATERIALS)) {
+        // 属于 SMELTERY_ALLOWLIST 里的标签
+        if (!MaidsConstructConfig.MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.get()
+            && !stack.is(TagItem.SMELTERY_ALLOWLIST)) {
             return false;
         }
         // 查找熔炼配方
@@ -146,7 +148,7 @@ public class SmelteryHelper {
      * 通过对比"加入前"和"加入后"的合金配方集合来判断——
      * 如果合金已经不可避免（现有流体+正在熔化的物品已经会触发合金），则允许继续投入同类材料。
      */
-    private static boolean hasAlloyResult(SmelteryBlockEntity smeltery, int temperature, FluidStack newFluid) {
+    public static boolean hasAlloyResult(SmelteryBlockEntity smeltery, int temperature, FluidStack newFluid) {
         Level level = smeltery.getLevel();
         if (level == null) {
             return false;
@@ -175,7 +177,7 @@ public class SmelteryHelper {
     /**
      * 将冶炼炉中正在熔化的物品产生的流体加入虚拟罐。
      */
-    private static void addMeltingItemFluids(SmelteryBlockEntity smeltery, VirtualAlloyTank tank, int temperature) {
+    public static void addMeltingItemFluids(SmelteryBlockEntity smeltery, VirtualAlloyTank tank, int temperature) {
         IItemHandler meltingInv = smeltery.getMeltingInventory();
         for (int i = 0; i < meltingInv.getSlots(); i++) {
             ItemStack meltingStack = meltingInv.getStackInSlot(i);

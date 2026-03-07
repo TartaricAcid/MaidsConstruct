@@ -45,5 +45,7 @@
   "gui.maidsconstruct.config.sort_inventory.tooltip.true": "Enabled: Sort inventory by Blocks > Ingots > Gems > Nuggets > Other",
   "gui.maidsconstruct.config.sort_inventory.tooltip.false": "Disabled: Won't auto-sort inventory",
   "config.maidsconstruct.maid_smeltery_immunity": "Maid Smeltery Immunity",
-  "config.maidsconstruct.maid_smeltery_immunity.tooltip": "When enabled, maids are immune to smeltery damage and won't be melted into fluid"
+  "config.maidsconstruct.maid_smeltery_immunity.tooltip": "When enabled, maids are immune to smeltery damage and won't be melted into fluid",
+  "config.maidsconstruct.maid_ignore_smeltery_allowlist_tag": "Ignore Allowlist Tags",
+  "config.maidsconstruct.maid_ignore_smeltery_allowlist_tag.tooltip": "If true, maids will ignore #maidsconstruct:smeltery_allowlist tag.\nAnd try to put any meltable items into the smeltery."
 }

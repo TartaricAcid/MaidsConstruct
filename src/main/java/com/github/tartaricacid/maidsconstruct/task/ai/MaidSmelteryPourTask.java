@@ -2,8 +2,8 @@ package com.github.tartaricacid.maidsconstruct.task.ai;
 
 import com.github.tartaricacid.maidsconstruct.init.InitMemories;
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
-import com.github.tartaricacid.maidsconstruct.util.CastingHelper;
-import com.github.tartaricacid.maidsconstruct.util.SmelteryHelper;
+import com.github.tartaricacid.maidsconstruct.util.smeltery.CastingHelper;
+import com.github.tartaricacid.maidsconstruct.util.smeltery.SmelteryHelper;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;

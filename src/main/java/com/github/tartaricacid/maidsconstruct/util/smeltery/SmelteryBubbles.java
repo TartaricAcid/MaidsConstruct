@@ -1,4 +1,4 @@
-package com.github.tartaricacid.maidsconstruct.util;
+package com.github.tartaricacid.maidsconstruct.util.smeltery;
 
 import com.github.tartaricacid.maidsconstruct.task.SmelteryWorkState;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
@@ -54,7 +54,7 @@ public class SmelteryBubbles {
     public static final String NO_FUEL_BUBBLE = "chat.maidsconstruct.no_fuel";
     public static final String NO_ITEMS_BUBBLE = "chat.maidsconstruct.no_items";
 
-    private static final int MAX_CHAT_BUBBLES = 2;
+    public static final int MAX_CHAT_BUBBLES = 2;
 
     public static String randomBubble(EntityMaid maid, String[] pool) {
         return pool[maid.getRandom().nextInt(pool.length)];

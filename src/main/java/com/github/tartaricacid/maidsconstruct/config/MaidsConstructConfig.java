@@ -15,6 +15,11 @@ public class MaidsConstructConfig {
     public static ForgeConfigSpec.BooleanValue MAID_SMELTERY_IMMUNITY;
 
     /**
+     * 当开启此选项后，女仆将忽略 SMELTERY_ALLOWLIST 标签，会尝试把所有可熔炼的物品都放置到冶炼炉中
+     */
+    public static ForgeConfigSpec.BooleanValue MAID_IGNORE_SMELTERY_ALLOWLIST_TAG;
+
+    /**
      * 允许女仆使用的燃料流体 ID 列表
      */
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> ALLOWED_FUELS;
@@ -25,6 +30,10 @@ public class MaidsConstructConfig {
 
         builder.comment("If true, maids are immune to smeltery entity melting damage and won't produce fluid.");
         MAID_SMELTERY_IMMUNITY = builder.define("MaidSmelteryImmunity", true);
+
+        builder.comment("If true, maids will ignore #maidsconstruct:smeltery_allowlist tag.");
+        builder.comment("And try to put any meltable items into smeltery.");
+        MAID_IGNORE_SMELTERY_ALLOWLIST_TAG = builder.define("MaidIgnoreSmelteryAllowlistTag", false);
 
         builder.comment("Fluid IDs that maids are allowed to use as smeltery fuel.");
         builder.comment("Default: [\"minecraft:lava\", \"tconstruct:blazing_blood\"]");
