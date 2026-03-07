@@ -10,13 +10,21 @@ import java.util.List;
 
 public class MaidsConstructConfig {
     /**
+     * 女仆是否免疫冶炼炉伤害（不会被熔炼为肉汤）
+     */
+    public static ForgeConfigSpec.BooleanValue MAID_SMELTERY_IMMUNITY;
+
+    /**
      * 允许女仆使用的燃料流体 ID 列表
      */
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> ALLOWED_FUELS;
 
     public static ForgeConfigSpec init() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.push("fuel");
+        builder.push("general");
+
+        builder.comment("If true, maids are immune to smeltery entity melting damage and won't produce fluid.");
+        MAID_SMELTERY_IMMUNITY = builder.define("MaidSmelteryImmunity", true);
 
         builder.comment("Fluid IDs that maids are allowed to use as smeltery fuel.");
         builder.comment("Default: [\"minecraft:lava\", \"tconstruct:blazing_blood\"]");

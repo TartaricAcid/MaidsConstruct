@@ -1,6 +1,5 @@
 package com.github.tartaricacid.maidsconstruct.client.compat.cloth;
 
-import com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.AddClothConfigEvent;
 import com.google.common.collect.Lists;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -8,7 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.List;
+import static com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig.ALLOWED_FUELS;
+import static com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig.MAID_SMELTERY_IMMUNITY;
 
 public class ClothConfigIntegration {
     @SubscribeEvent
@@ -16,16 +16,22 @@ public class ClothConfigIntegration {
         MutableComponent title = Component.translatable("config.maidsconstruct.category");
         ConfigCategory category = event.getRoot().getOrCreateCategory(title);
 
-        MutableComponent name = Component.translatable("config.maidsconstruct.allowed_fuels");
-        MutableComponent tooltip = Component.translatable("config.maidsconstruct.allowed_fuels.tooltip");
-        List<String> value = Lists.newArrayList(MaidsConstructConfig.ALLOWED_FUELS.get());
-        List<String> defaultValue = Lists.newArrayList(MaidsConstructConfig.ALLOWED_FUELS.getDefault());
-
+        MutableComponent immunityName = Component.translatable("config.maidsconstruct.maid_smeltery_immunity");
+        MutableComponent immunityTooltip = Component.translatable("config.maidsconstruct.maid_smeltery_immunity.tooltip");
         category.addEntry(event.getEntryBuilder()
-                .startStrList(name, value)
-                .setDefaultValue(defaultValue)
-                .setTooltip(tooltip)
-                .setSaveConsumer(MaidsConstructConfig.ALLOWED_FUELS::set)
+                .startBooleanToggle(immunityName, MAID_SMELTERY_IMMUNITY.get())
+                .setDefaultValue(MAID_SMELTERY_IMMUNITY.getDefault())
+                .setTooltip(immunityTooltip)
+                .setSaveConsumer(MAID_SMELTERY_IMMUNITY::set)
+                .build());
+
+        MutableComponent fuelsName = Component.translatable("config.maidsconstruct.allowed_fuels");
+        MutableComponent fuelsTooltip = Component.translatable("config.maidsconstruct.allowed_fuels.tooltip");
+        category.addEntry(event.getEntryBuilder()
+                .startStrList(fuelsName, Lists.newArrayList(ALLOWED_FUELS.get()))
+                .setDefaultValue(Lists.newArrayList(ALLOWED_FUELS.getDefault()))
+                .setTooltip(fuelsTooltip)
+                .setSaveConsumer(ALLOWED_FUELS::set)
                 .build());
     }
 }

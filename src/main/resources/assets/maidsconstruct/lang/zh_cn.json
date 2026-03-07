@@ -43,5 +43,7 @@
   "gui.maidsconstruct.config.craft_blocks.tooltip.false": "已关闭：不自动合成块",
   "gui.maidsconstruct.config.sort_inventory": "自动整理背包",
   "gui.maidsconstruct.config.sort_inventory.tooltip.true": "已开启：合成后按 块 → 锭 → 宝石 → 粒 → 其他 整理背包",
-  "gui.maidsconstruct.config.sort_inventory.tooltip.false": "已关闭：不自动整理背包"
+  "gui.maidsconstruct.config.sort_inventory.tooltip.false": "已关闭：不自动整理背包",
+  "config.maidsconstruct.maid_smeltery_immunity": "女仆冶炼炉免疫",
+  "config.maidsconstruct.maid_smeltery_immunity.tooltip": "开启后，女仆不会被冶炼炉熔炼为流体，也不会受到冶炼炉伤害"
 }
