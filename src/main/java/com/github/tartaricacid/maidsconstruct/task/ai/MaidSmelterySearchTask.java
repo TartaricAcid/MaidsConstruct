@@ -182,7 +182,7 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
                 return setActionTarget(maid, smelteryPos, SmelteryWorkState.FUELING);
             }
 
-            // 女仆没有岩浆，且冶炼炉中也没有燃料 -> 不投入物品，等待玩家补充燃料
+            // 女仆没有熔岩，且冶炼炉中也没有燃料 -> 不投入物品，等待玩家补充燃料
             SmelteryBubbles.showNoFuelBubble(maid);
             this.setNextCheckTickCount(200);
             return false;

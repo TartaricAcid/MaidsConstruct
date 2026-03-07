@@ -1,5 +1,7 @@
 # Maid's Construct 女仆匠魂
 
+![img](./icon.png)
+
 Maid's Construct 是一个 Minecraft 1.20.1 Forge
 模组，为 [车万女仆（Touhou Little Maid）](https://github.com/TartaricAcid/TouhouLittleMaid)
 和 [匠魂（Tinkers' Construct）](https://github.com/SlimeKnights/TinkersConstruct) 之间提供联动功能。

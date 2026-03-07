@@ -46,7 +46,7 @@ public class MaidSmelteryFuelTask extends MaidSmelteryActionTask {
 
     /**
      * 从女仆背包中查找含有燃料流体的容器物品，通过 Forge 流体能力将燃料转移到燃料罐。
-     * 仅使用配置中允许的燃料流体（默认为岩浆和烈焰血）。
+     * 仅使用配置中允许的燃料流体（默认为熔岩和烈焰血）。
      * 兼容所有实现了 FLUID_HANDLER_ITEM 能力的模组容器。
      */
     private void fillFuelFromInventory(EntityMaid maid, MultitankFuelModule fuelModule) {

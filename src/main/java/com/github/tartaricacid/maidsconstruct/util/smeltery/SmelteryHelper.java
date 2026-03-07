@@ -241,7 +241,7 @@ public class SmelteryHelper {
 
     /**
      * 检查物品是否含有配置中允许的冶炼炉燃料（通过 FLUID_HANDLER_ITEM 能力）。
-     * 使用 mod 配置中的燃料白名单进行判断，默认支持岩浆和烈焰血。
+     * 使用 mod 配置中的燃料白名单进行判断，默认支持熔岩和烈焰血。
      */
     public static boolean containsFuel(ItemStack stack) {
         if (stack.isEmpty()) {
