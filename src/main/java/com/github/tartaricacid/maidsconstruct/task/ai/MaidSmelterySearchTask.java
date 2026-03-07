@@ -71,10 +71,12 @@ public class MaidSmelterySearchTask extends MaidMoveToBlockTask {
                 .getMemory(InitMemories.SMELTERY_POS.get())
                 .orElse(null);
 
-        // 验证存储的冶炼炉是否仍然有效
+        // 验证存储的冶炼炉是否仍然有效（结构完整且在工作范围内）
         if (smelteryPos != null) {
             BlockEntity be = level.getBlockEntity(smelteryPos);
-            if (!(be instanceof HeatingStructureBlockEntity smeltery) || smeltery.getStructure() == null) {
+            if (!(be instanceof HeatingStructureBlockEntity smeltery)
+                || smeltery.getStructure() == null
+                || !maid.isWithinRestriction(smelteryPos)) {
                 SmelteryExtraMaidBrain.clearAllMemories(maid);
                 smelteryPos = null;
             }

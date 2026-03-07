@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -16,6 +17,7 @@ import slimeknights.tconstruct.library.recipe.FluidValues;
 import slimeknights.tconstruct.library.recipe.TinkerRecipeTypes;
 import slimeknights.tconstruct.library.recipe.casting.ICastingRecipe;
 import slimeknights.tconstruct.smeltery.TinkerSmeltery;
+import slimeknights.tconstruct.smeltery.block.AbstractCastingBlock;
 import slimeknights.tconstruct.smeltery.block.component.SearedDrainBlock;
 import slimeknights.tconstruct.smeltery.block.entity.CastingBlockEntity;
 import slimeknights.tconstruct.smeltery.block.entity.FaucetBlockEntity;
@@ -163,8 +165,27 @@ public class CastingHelper {
     private static int scoreCastingTarget(ServerLevel level, CastingBlockEntity casting, FluidStack fluid) {
         int availableFluid = fluid.getAmount();
 
+        // 如果是铸造盆
         if (casting instanceof CastingBlockEntity.Basin) {
             RecipeType<ICastingRecipe> type = TinkerRecipeTypes.CASTING_BASIN.get();
+
+            ItemStack basinCast = casting.getItem(CastingBlockEntity.INPUT);
+            TagKey<Item> emptyCastTag = casting.getEmptyCastTag();
+
+            // 焦褐铸造盆（requireCast=true）需要在 INPUT 槽放置空铸模才能浇铸
+            if (casting.getBlockState().getBlock() instanceof AbstractCastingBlock castingBlock
+                && castingBlock.isRequireCast()) {
+                // 如果当前铸造盆没有空铸模，无法浇铸
+                if (!basinCast.is(emptyCastTag)) {
+                    return -1;
+                }
+            } else {
+                // 否则，要么为空，要么为 emptyCastTag
+                if (!basinCast.isEmpty() && !basinCast.is(emptyCastTag)) {
+                    return -1;
+                }
+            }
+
             // 浇铸盆制造块（金属需要810mB）。只在流体充足时优先选择浇铸盆。
             if (availableFluid >= FluidValues.METAL_BLOCK
                 && hasCastingRecipe(level, ItemStack.EMPTY, fluid, type)) {
