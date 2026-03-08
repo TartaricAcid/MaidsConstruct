@@ -44,6 +44,7 @@ public class MaidSmelteryInteractTask extends MaidSmelteryActionTask {
         boolean inserted = false;
         // 追踪下一个可熔炼槽位
         int nextSmelterySlot = 0;
+        boolean ignoreTag = SmelteryHelper.getIgnoreAllowlistTag(maid);
 
         for (int maidSlot = 0; maidSlot < maidInv.getSlots(); maidSlot++) {
             ItemStack maidStack = maidInv.getStackInSlot(maidSlot);
@@ -52,7 +53,7 @@ public class MaidSmelteryInteractTask extends MaidSmelteryActionTask {
             }
 
             // 检查此物品是否为允许投入冶炼炉的原料（含合金规避检查）
-            if (!SmelteryHelper.isSmeltingInput(maidStack, smeltery)) {
+            if (!SmelteryHelper.isSmeltingInput(maidStack, smeltery, ignoreTag)) {
                 continue;
             }
 

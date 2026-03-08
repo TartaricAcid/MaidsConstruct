@@ -24,15 +24,6 @@ public class ClothConfigIntegration {
                 .setSaveConsumer(MAID_SMELTERY_IMMUNITY::set)
                 .build());
 
-        MutableComponent ignoreTagName = Component.translatable("config.maidsconstruct.maid_ignore_smeltery_allowlist_tag");
-        MutableComponent ignoreTagTooltip = Component.translatable("config.maidsconstruct.maid_ignore_smeltery_allowlist_tag.tooltip");
-        category.addEntry(event.getEntryBuilder()
-                .startBooleanToggle(ignoreTagName, MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.get())
-                .setDefaultValue(MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.getDefault())
-                .setTooltip(ignoreTagTooltip)
-                .setSaveConsumer(MAID_IGNORE_SMELTERY_ALLOWLIST_TAG::set)
-                .build());
-
         MutableComponent fuelsName = Component.translatable("config.maidsconstruct.allowed_fuels");
         MutableComponent fuelsTooltip = Component.translatable("config.maidsconstruct.allowed_fuels.tooltip");
         category.addEntry(event.getEntryBuilder()

@@ -1,5 +1,6 @@
 package com.github.tartaricacid.maidsconstruct.client.gui;
 
+import com.github.tartaricacid.maidsconstruct.MaidsConstruct;
 import com.github.tartaricacid.maidsconstruct.client.container.SmelteryConfigContainer;
 import com.github.tartaricacid.maidsconstruct.init.InitNetwork;
 import com.github.tartaricacid.maidsconstruct.init.InitTaskData;
@@ -10,19 +11,33 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.anti_ad.mc.ipn.api.IPNButton;
+import org.anti_ad.mc.ipn.api.IPNGuiHint;
+import org.anti_ad.mc.ipn.api.IPNPlayerSideOnly;
 
 import java.util.Collections;
 import java.util.Objects;
 
+@IPNPlayerSideOnly
+@IPNGuiHint(button = IPNButton.SORT, horizontalOffset = -36, bottom = -12)
+@IPNGuiHint(button = IPNButton.SORT_COLUMNS, horizontalOffset = -24, bottom = -24)
+@IPNGuiHint(button = IPNButton.SORT_ROWS, horizontalOffset = -12, bottom = -36)
+@IPNGuiHint(button = IPNButton.SHOW_EDITOR, horizontalOffset = -5)
+@IPNGuiHint(button = IPNButton.SETTINGS, horizontalOffset = -5)
 public class SmelteryConfigGui extends MaidTaskConfigGui<SmelteryConfigContainer> {
+    private static final ResourceLocation SMELTERY_CONFIG_TEXTURE = new ResourceLocation(MaidsConstruct.MOD_ID, "textures/gui/smeltery_config.png");
+
     private SmelteryCheckbox craftIngotsButton;
     private SmelteryCheckbox craftBlocksButton;
     private SmelteryCheckbox sortInventoryButton;
+    private SmelteryCheckbox ignoreAllowlistTagButton;
 
     private boolean craftIngots;
     private boolean craftBlocks;
     private boolean sortInventory;
+    private boolean ignoreAllowlistTag;
 
     public SmelteryConfigGui(SmelteryConfigContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
@@ -30,12 +45,19 @@ public class SmelteryConfigGui extends MaidTaskConfigGui<SmelteryConfigContainer
         this.craftIngots = config.craftIngots();
         this.craftBlocks = config.craftBlocks();
         this.sortInventory = config.sortInventory();
+        this.ignoreAllowlistTag = config.ignoreAllowlistTag();
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {
+        super.renderBg(graphics, partialTicks, x, y);
+        graphics.blit(SMELTERY_CONFIG_TEXTURE, leftPos + 210, topPos + 128, 0, 0, 31, 24);
     }
 
     @Override
     protected void initAdditionWidgets() {
         int startLeft = leftPos + 95;
-        int startTop = topPos + 57;
+        int startTop = topPos + 55;
 
         MutableComponent ingotsText = Component.translatable("gui.maidsconstruct.config.craft_ingots").withStyle(ChatFormatting.DARK_GRAY);
         craftIngotsButton = new SmelteryCheckbox(startLeft, startTop, ingotsText, craftIngots, b -> craftIngots = b);
@@ -48,6 +70,10 @@ public class SmelteryConfigGui extends MaidTaskConfigGui<SmelteryConfigContainer
         MutableComponent sortText = Component.translatable("gui.maidsconstruct.config.sort_inventory").withStyle(ChatFormatting.DARK_GRAY);
         sortInventoryButton = new SmelteryCheckbox(startLeft, startTop + 44, sortText, sortInventory, b -> sortInventory = b);
         this.addRenderableWidget(sortInventoryButton);
+
+        MutableComponent ignoreTagText = Component.translatable("gui.maidsconstruct.config.ignore_allowlist_tag").withStyle(ChatFormatting.DARK_GRAY);
+        ignoreAllowlistTagButton = new SmelteryCheckbox(startLeft, startTop + 66, ignoreTagText, ignoreAllowlistTag, b -> ignoreAllowlistTag = b);
+        this.addRenderableWidget(ignoreAllowlistTagButton);
     }
 
     @Override
@@ -84,12 +110,22 @@ public class SmelteryConfigGui extends MaidTaskConfigGui<SmelteryConfigContainer
                     Component.translatable(key)
             ), x, y);
         }
+        if (ignoreAllowlistTagButton.isHovered()) {
+            String key = ignoreAllowlistTag
+                    ? "gui.maidsconstruct.config.ignore_allowlist_tag.tooltip.true"
+                    : "gui.maidsconstruct.config.ignore_allowlist_tag.tooltip.false";
+            graphics.renderComponentTooltip(font, Collections.singletonList(
+                    Component.translatable(key)
+            ), x, y);
+        }
     }
 
     @Override
     public void onClose() {
         if (this.getMaid() != null) {
-            InitNetwork.CHANNEL.sendToServer(new SetSmelteryConfigMessage(this.getMaid().getId(), craftIngots, craftBlocks, sortInventory));
+            var msg = new SetSmelteryConfigMessage(this.getMaid().getId(),
+                    craftIngots, craftBlocks, sortInventory, ignoreAllowlistTag);
+            InitNetwork.CHANNEL.sendToServer(msg);
         }
         super.onClose();
     }

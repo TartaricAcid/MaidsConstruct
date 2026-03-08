@@ -2,6 +2,8 @@ package com.github.tartaricacid.maidsconstruct.util.smeltery;
 
 import com.github.tartaricacid.maidsconstruct.config.MaidsConstructConfig;
 import com.github.tartaricacid.maidsconstruct.datagen.tag.TagItem;
+import com.github.tartaricacid.maidsconstruct.init.InitTaskData;
+import com.github.tartaricacid.maidsconstruct.task.data.SmelteryConfigData;
 import com.github.tartaricacid.maidsconstruct.util.recipe.VirtualAlloyTank;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.resources.ResourceLocation;
@@ -101,13 +103,25 @@ public class SmelteryHelper {
     }
 
     /**
+     * 从女仆的 TaskConfig 中读取是否忽略白名单标签。
+     */
+    public static boolean getIgnoreAllowlistTag(EntityMaid maid) {
+        SmelteryConfigData config = maid.getData(InitTaskData.SMELTERY_CONFIG);
+        if (config == null) {
+            config = SmelteryConfigData.DEFAULT;
+        }
+        return config.ignoreAllowlistTag();
+    }
+
+    /**
      * 检查女仆背包中是否有允许投入冶炼炉的物品。
      * 仅限 SMELTERY_ALLOWLIST 里的物品，防止将成品（锭/块等）放回冶炼炉。
      */
     public static boolean hasMeltableItems(EntityMaid maid, HeatingStructureBlockEntity smeltery) {
+        boolean ignoreTag = getIgnoreAllowlistTag(maid);
         IItemHandler inv = maid.getAvailableInv(false);
         for (int i = 0; i < inv.getSlots(); i++) {
-            if (isSmeltingInput(inv.getStackInSlot(i), smeltery)) {
+            if (isSmeltingInput(inv.getStackInSlot(i), smeltery, ignoreTag)) {
                 return true;
             }
         }
@@ -118,13 +132,12 @@ public class SmelteryHelper {
      * 检查物品是否为允许投入冶炼炉的原料。
      * 仅限 SMELTERY_ALLOWLIST 里的物品，且熔炼后产生的流体不会与冶炼炉中已有流体形成合金。
      */
-    public static boolean isSmeltingInput(ItemStack stack, HeatingStructureBlockEntity smeltery) {
+    public static boolean isSmeltingInput(ItemStack stack, HeatingStructureBlockEntity smeltery, boolean ignoreAllowlistTag) {
         if (stack.isEmpty()) {
             return false;
         }
         // 属于 SMELTERY_ALLOWLIST 里的标签
-        if (!MaidsConstructConfig.MAID_IGNORE_SMELTERY_ALLOWLIST_TAG.get()
-            && !stack.is(TagItem.SMELTERY_ALLOWLIST)) {
+        if (!ignoreAllowlistTag && !stack.is(TagItem.SMELTERY_ALLOWLIST)) {
             return false;
         }
         // 查找熔炼配方

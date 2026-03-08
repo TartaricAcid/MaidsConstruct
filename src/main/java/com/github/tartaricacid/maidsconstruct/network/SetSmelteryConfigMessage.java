@@ -15,12 +15,15 @@ public class SetSmelteryConfigMessage {
     private final boolean craftIngots;
     private final boolean craftBlocks;
     private final boolean sortInventory;
+    private final boolean ignoreAllowlistTag;
 
-    public SetSmelteryConfigMessage(int entityId, boolean craftIngots, boolean craftBlocks, boolean sortInventory) {
+    public SetSmelteryConfigMessage(int entityId, boolean craftIngots, boolean craftBlocks,
+                                    boolean sortInventory, boolean ignoreAllowlistTag) {
         this.entityId = entityId;
         this.craftIngots = craftIngots;
         this.craftBlocks = craftBlocks;
         this.sortInventory = sortInventory;
+        this.ignoreAllowlistTag = ignoreAllowlistTag;
     }
 
     public static void encode(SetSmelteryConfigMessage message, FriendlyByteBuf buf) {
@@ -28,10 +31,12 @@ public class SetSmelteryConfigMessage {
         buf.writeBoolean(message.craftIngots);
         buf.writeBoolean(message.craftBlocks);
         buf.writeBoolean(message.sortInventory);
+        buf.writeBoolean(message.ignoreAllowlistTag);
     }
 
     public static SetSmelteryConfigMessage decode(FriendlyByteBuf buf) {
-        return new SetSmelteryConfigMessage(buf.readInt(), buf.readBoolean(), buf.readBoolean(), buf.readBoolean());
+        return new SetSmelteryConfigMessage(buf.readInt(), buf.readBoolean(),
+                buf.readBoolean(), buf.readBoolean(), buf.readBoolean());
     }
 
     public static void handle(SetSmelteryConfigMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -44,7 +49,9 @@ public class SetSmelteryConfigMessage {
                 }
                 Entity entity = sender.level().getEntity(message.entityId);
                 if (entity instanceof EntityMaid maid && maid.isOwnedBy(sender)) {
-                    maid.setAndSyncData(InitTaskData.SMELTERY_CONFIG, new SmelteryConfigData(message.craftIngots, message.craftBlocks, message.sortInventory));
+                    SmelteryConfigData data = new SmelteryConfigData(message.craftIngots, message.craftBlocks,
+                            message.sortInventory, message.ignoreAllowlistTag);
+                    maid.setAndSyncData(InitTaskData.SMELTERY_CONFIG, data);
                 }
             });
         }

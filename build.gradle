@@ -119,8 +119,15 @@ dependencies {
 
     // JEI
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+
     // Jade
     runtimeOnly fg.deobf("maven.modrinth:jade:11.13.1+forge")
+
+    // IPN
+    runtimeOnly "curse.maven:kotlin-for-forge-351264:4983659"
+    runtimeOnly fg.deobf("curse.maven:libipn-679177:4870127")
+    implementation fg.deobf("curse.maven:inventory-profiles-next-495267:4813458")
+
     // NBT 编辑工具等
     runtimeOnly fg.deobf("maven.modrinth:nbtedit-reborn:5.0.3+mc1.20.1")
     runtimeOnly fg.deobf("maven.modrinth:kiwi:11.5.5")
