@@ -67,8 +67,8 @@ Maid's Construct 是一个 Minecraft 1.20.1 Forge
 |:------------------:|:------:|
 |     Minecraft      | 1.20.1 |
 |       Forge        | 47.2+  |
-| Touhou Little Maid | 1.5.0+ |
-| Tinkers' Construct | 3.11+  |
+| Touhou Little Maid | 1.3.7+ |
+| Tinkers' Construct | 3.10+  |
 
 ### 调试
 
@@ -121,20 +121,20 @@ This mod adds a "Smeltery" task for maids, enabling them to autonomously manage 
 
 #### Mod Config (Global, affects all maids)
 
-| Option                 | Description                                 | Default             |
-|------------------------|---------------------------------------------|---------------------|
-| Maid Smeltery Immunity | Maids are immune to smeltery melting damage | Enabled             |
-| Allowed Fuels          | List of fluid IDs maids can use as fuel     | Lava, Blazing Blood |
+|         Option         |                 Description                 |       Default       |
+|:----------------------:|:-------------------------------------------:|:-------------------:|
+| Maid Smeltery Immunity | Maids are immune to smeltery melting damage |       Enabled       |
+|     Allowed Fuels      |   List of fluid IDs maids can use as fuel   | Lava, Blazing Blood |
 
 #### Per-Maid Task Config (Individual per maid)
 
 Configurable per maid in the maid GUI:
 
-| Option               | Description                                           | Default  |
-|----------------------|-------------------------------------------------------|----------|
-| Auto-craft Ingots    | Auto-compact 9 nuggets into ingots                    | Enabled  |
-| Auto-craft Blocks    | Auto-compact 9 ingots or gems into blocks             | Enabled  |
-| Auto-sort Inventory  | Sort inventory by type after crafting                 | Enabled  |
+|        Option        |                      Description                      | Default  |
+|:--------------------:|:-----------------------------------------------------:|:--------:|
+|  Auto-craft Ingots   |          Auto-compact 9 nuggets into ingots           | Enabled  |
+|  Auto-craft Blocks   |       Auto-compact 9 ingots or gems into blocks       | Enabled  |
+| Auto-sort Inventory  |         Sort inventory by type after crafting         | Enabled  |
 | Ignore Allowlist Tag | Ignore the allowlist tag and insert any meltable item | Disabled |
 
 #### Item Allowlist Tag
@@ -152,12 +152,12 @@ You can customize this tag via datapacks to add or remove allowed items.
 
 ### Dependencies
 
-| Mod                | Version |
-|--------------------|---------|
-| Minecraft          | 1.20.1  |
-| Forge              | 47.2+   |
-| Touhou Little Maid | 1.5.0+  |
-| Tinkers' Construct | 3.11+   |
+|        Mod         | Version |
+|:------------------:|:-------:|
+|     Minecraft      | 1.20.1  |
+|       Forge        |  47.2+  |
+| Touhou Little Maid | 1.3.7+  |
+| Tinkers' Construct |  3.10+  |
 
 ### Debugging
 
